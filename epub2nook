@@ -1,0 +1,25 @@
+#!/bin/bash
+
+suffix='nook.epub'
+
+function shrink
+{
+	bkname=$(basename "$1" '.epub')
+	unzip -q "$1" -d "$bkname"
+	cd "$bkname"
+	chmod -R 755 ./*
+	find . -iregex	".*\.\(\(jpe?\|pn\)g\|gif\)"	-type f -print0	| xargs -0 -I {} mogrify -quiet -colorspace Gray -colors 16 -format png -resize '600x800>' {}
+	find . -iregex	".*\.\(jpe?g\|gif\)"		-type f -print0	| xargs -0 rm -f
+	find . -iregex	".*\.x?html?\|\.css"		-type f -print0	| xargs -0 -I {} sed -e 's/\.\(jpe\?g\|gif\)/\.png/Ig'	-i {}
+	find . -iname	'*.opf'				-type f -print0	| xargs -0 -I {} sed -e 's/\(jpe\?g\|gif\)/png/Ig'	-i {}
+	zip -0 -qX "../$bkname$suffix" ./mimetype
+	zip -qrX "../$bkname$suffix" ./* -x mimetype
+	cd ../
+	rm -rf "$bkname"
+#	java -jar epubcheck-3.0.1/epubcheck-3.0.1.jar "$bkname$suffix"
+}
+
+for book in *.epub
+do
+	shrink "$book"
+done
