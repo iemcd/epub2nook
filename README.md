@@ -7,3 +7,5 @@ The name is slightly wrong, becuase the output is also an epub file. Currently i
 The tool currently requires **imagemagick**, **zip**, and **sed**.
 
 For an unscientific sample of epubs that I own or have downloaded, I see about a 50% reduction in size.
+
+See [the wiki](https://github.com/iemcd/epub2nook/wiki) for more information.
